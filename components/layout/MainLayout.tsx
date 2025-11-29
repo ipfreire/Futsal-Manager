@@ -1,9 +1,8 @@
-
 import React, { ReactNode, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useI18n } from '../../context/I18nContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import { User, LogOut, Shield, ClipboardList, BarChart2, Users, Trophy, Newspaper, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, Shield, ClipboardList, BarChart2, Users, Trophy, Newspaper, ChevronLeft, ChevronRight, FileText, UserCircle2, BookCopy } from 'lucide-react';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -74,7 +73,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, navItems, activeView 
                 <p className="text-sm font-medium text-white">{user?.name}</p>
                 <p className="text-xs text-gray-400">{user?.role ? t(`roles.${user.role}`) : ''}</p>
             </div>
-            <User className="h-8 w-8 rounded-full bg-indigo-500 p-1" />
+             {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt={user.name} className="h-10 w-10 rounded-full" />
+            ) : (
+                <div className="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+                    {user?.name.charAt(0).toUpperCase()}
+                </div>
+            )}
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
@@ -85,5 +90,5 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, navItems, activeView 
   );
 };
 
-export { User, LogOut, Shield, ClipboardList, BarChart2, Users, Trophy, Newspaper, ChevronLeft, ChevronRight };
+export { Shield, ClipboardList, BarChart2, Users, Trophy, Newspaper, ChevronLeft, ChevronRight, FileText, UserCircle2, BookCopy };
 export default MainLayout;

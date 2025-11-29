@@ -1,19 +1,9 @@
-
 import { useState, useRef, useCallback, useEffect } from 'react';
 
-const useTimer = (initialTime = 0) => {
-  const [time, setTime] = useState(initialTime);
+const useTimer = (initialDuration = 0) => {
+  const [time, setTime] = useState(initialDuration);
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef<number | null>(null);
-
-  const start = useCallback(() => {
-    if (!isRunning) {
-      setIsRunning(true);
-      timerRef.current = window.setInterval(() => {
-        setTime(prevTime => prevTime + 1);
-      }, 1000);
-    }
-  }, [isRunning]);
 
   const pause = useCallback(() => {
     if (isRunning) {
@@ -25,9 +15,24 @@ const useTimer = (initialTime = 0) => {
     }
   }, [isRunning]);
 
-  const reset = useCallback((newTime = 0) => {
+  const start = useCallback(() => {
+    if (!isRunning && time > 0) {
+      setIsRunning(true);
+      timerRef.current = window.setInterval(() => {
+        setTime(prevTime => {
+            if (prevTime <= 1) {
+                pause();
+                return 0;
+            }
+            return prevTime - 1;
+        });
+      }, 1000);
+    }
+  }, [isRunning, time, pause]);
+
+  const reset = useCallback((newDuration: number) => {
     pause();
-    setTime(newTime);
+    setTime(newDuration);
   }, [pause]);
 
   useEffect(() => {

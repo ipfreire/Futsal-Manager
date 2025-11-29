@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import MainLayout, { Shield, ClipboardList, Newspaper, BarChart2, Users } from '../layout/MainLayout';
+// FIX: Import the 'Users' icon from MainLayout to be used in the navigation items.
+import MainLayout, { Shield, ClipboardList, Newspaper, BarChart2, UserCircle2, Users } from '../layout/MainLayout';
 import { useData } from '../../context/DataContext';
 import { useI18n } from '../../context/I18nContext';
+import { useAuth } from '../../context/AuthContext';
 import FutsalCourt from '../shared/FutsalCourt';
 import { TrainingExercise, Game } from '../../types';
 
 const AthleteDashboard: React.FC = () => {
   const [activeView, setActiveView] = useState('Call-ups');
-  const { clubInfo, trainingPlans, games, callups, exercises } = useData();
+  const { clubInfo, trainingPlans, games, callups, exercises, getFullRoster } = useData();
+  const { user } = useAuth();
   const { t } = useI18n();
   const [selectedExercise, setSelectedExercise] = useState<TrainingExercise | null>(null);
   const [viewingReport, setViewingReport] = useState<Game | null>(null);
+
+  const athleteProfile = getFullRoster().find(a => a.name === user?.name); // Simple match by name for demo
 
   const sharedPlans = trainingPlans.filter(p => p.isShared);
   const sharedExercises = exercises.filter(e => e.isShared);
@@ -18,6 +23,7 @@ const AthleteDashboard: React.FC = () => {
   const exercisesById = new Map(exercises.map(e => [e.id, e]));
 
   const navItems = [
+    { name: 'My Profile', icon: <UserCircle2 className="h-5 w-5" />, onClick: () => setActiveView('My Profile') },
     { name: 'Club Info', icon: <Shield className="h-5 w-5" />, onClick: () => setActiveView('Club Info') },
     { name: 'Call-ups', icon: <Newspaper className="h-5 w-5" />, onClick: () => setActiveView('Call-ups') },
     { name: 'Training Units', icon: <ClipboardList className="h-5 w-5" />, onClick: () => setActiveView('Training Units') },
@@ -71,6 +77,30 @@ const AthleteDashboard: React.FC = () => {
 
   const renderContent = () => {
     switch (activeView) {
+      case 'My Profile':
+        return athleteProfile ? (
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <div className="flex items-center space-x-6">
+                    <img src={athleteProfile.photoUrl || `https://ui-avatars.com/api/?name=${athleteProfile.name.replace(' ', '+')}&background=818cf8&color=fff&size=128`} alt={athleteProfile.name} className="h-32 w-32 rounded-full object-cover border-4 border-indigo-500"/>
+                    <div>
+                        <h3 className="text-3xl font-bold">{athleteProfile.name} <span className="text-indigo-400">#{athleteProfile.number}</span></h3>
+                        <p className="text-xl text-gray-300">{athleteProfile.position}</p>
+                    </div>
+                </div>
+                <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                    <div className="bg-gray-700 p-3 rounded-lg"><strong>{t('athlete.dob')}:</strong> {athleteProfile.dob || 'N/A'}</div>
+                    <div className="bg-gray-700 p-3 rounded-lg"><strong>{t('athlete.height')}:</strong> {athleteProfile.height ? `${athleteProfile.height} cm` : 'N/A'}</div>
+                    <div className="bg-gray-700 p-3 rounded-lg"><strong>{t('athlete.weight')}:</strong> {athleteProfile.weight ? `${athleteProfile.weight} kg` : 'N/A'}</div>
+                    <div className="bg-gray-700 p-3 rounded-lg"><strong>{t('athlete.strongFoot')}:</strong> {athleteProfile.strongFoot ? t(`athlete.${athleteProfile.strongFoot.toLowerCase()}Foot`) : 'N/A'}</div>
+                </div>
+                {athleteProfile.observations && (
+                    <div className="mt-6">
+                        <h4 className="font-bold mb-2">{t('common.observations')}</h4>
+                        <p className="bg-gray-700 p-3 rounded-lg text-gray-300">{athleteProfile.observations}</p>
+                    </div>
+                )}
+            </div>
+        ) : <p>{t('common.noDataAvailable')}</p>;
       case 'Club Info':
         return (
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
@@ -102,9 +132,12 @@ const AthleteDashboard: React.FC = () => {
                         <p className="text-sm text-gray-400">{plan.date}</p>
                         <p className="text-sm text-gray-300 italic my-2">{plan.observations}</p>
                         <ul className="mt-2 space-y-2">
-                            {plan.exerciseIds.map(exId => {
-                                const ex = exercisesById.get(exId);
-                                return ex ? <li key={exId} onClick={() => setSelectedExercise(ex)} className="text-gray-200 text-sm ml-4 list-disc cursor-pointer hover:text-indigo-400">{ex.title}</li> : null
+                            {plan.exercises.map(planEx => {
+                                const ex = exercisesById.get(planEx.exerciseId);
+                                return ex ? <li key={ex.id} onClick={() => setSelectedExercise(ex)} className="text-sm text-gray-300 bg-gray-700 px-2 py-1 rounded flex justify-between items-center cursor-pointer hover:bg-gray-600">
+                                    <span>{ex.title}</span>
+                                    <span className="text-xs text-indigo-300">{planEx.duration} {t('common.min')}</span>
+                                </li> : null
                             })}
                         </ul>
                     </div>

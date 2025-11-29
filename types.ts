@@ -4,17 +4,43 @@ export enum UserRole {
   Athlete = 'Athlete',
 }
 
+export enum AgeGroup {
+    Petizes = 'Petizes',
+    Traquinas = 'Traquinas',
+    Benjamins = 'Benjamins',
+    Infantis = 'Infantis',
+    Iniciados = 'Iniciados',
+    Juvenis = 'Juvenis',
+    Juniores = 'Juniores',
+}
+
+export interface Team {
+    id: string;
+    name: string;
+    ageGroup: AgeGroup;
+}
+
 export interface User {
   id: string;
   name: string;
   role: UserRole;
+  email: string;
+  avatarUrl?: string;
+  teamId?: string; // Coaches and Athletes will have a teamId
 }
 
 export interface Athlete {
-  id: string;
+  id:string;
+  teamId: string;
   name: string;
   number: number;
   position: string;
+  photoUrl?: string;
+  dob?: string; // Date of Birth
+  height?: number; // in cm
+  weight?: number; // in kg
+  strongFoot?: 'Left' | 'Right' | 'Both';
+  observations?: string;
   stats: {
     goals: number;
     assists: number;
@@ -43,6 +69,7 @@ export enum ExerciseCategory {
 
 export interface TrainingExercise {
   id: string;
+  teamId: string;
   title: string;
   category: ExerciseCategory;
   athleteCount: string; // e.g. "2v1", "4+GK", "All"
@@ -52,11 +79,17 @@ export interface TrainingExercise {
   // paths for animations could be added here
 }
 
+export interface TrainingPlanExercise {
+    exerciseId: string;
+    duration: number; // in minutes
+}
+
 export interface TrainingPlan { // This is a "Training Unit"
   id: string;
+  teamId: string;
   title: string;
   date: string;
-  exerciseIds: string[]; // references to TrainingExercise
+  exercises: TrainingPlanExercise[];
   observations: string;
   isShared: boolean;
 }
@@ -87,6 +120,7 @@ export interface GameEvent {
 
 export interface Game {
     id: string;
+    teamId: string;
     opponent: string;
     date: string;
     status: 'live' | 'finished';
@@ -103,6 +137,7 @@ export interface Game {
 
 export interface GameDayCallup {
     id: string;
+    teamId: string;
     opponent: string;
     date: string;
     meetTime: string;

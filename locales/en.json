@@ -10,7 +10,9 @@
     "share": "Share",
     "unshare": "Unshare",
     "noDataAvailable": "No data available.",
-    "saveAndShare": "Save & Share"
+    "saveAndShare": "Save & Share",
+    "min": "min",
+    "minutes": "Minutes"
   },
   "roles": {
     "Director": "Director",
@@ -19,6 +21,7 @@
   },
   "navigation": {
     "ClubInfo": "Club Info",
+    "Teams": "Teams",
     "ViewTeamData": "View Team Data",
     "Roster": "Roster",
     "TrainingPlanner": "Training Planner",
@@ -27,17 +30,19 @@
     "Callups": "Call-ups",
     "TrainingUnits": "Training Units",
     "SharedExercises": "Shared Exercises",
-    "GameReports": "Game Reports"
+    "GameReports": "Game Reports",
+    "MyProfile": "My Profile"
   },
   "layout": {
     "collapse": "Collapse",
     "logout": "Logout"
   },
   "login": {
-    "subtitle": "Select your role to continue",
-    "selectRole": "Select Role",
-    "loginButton": "Login",
-    "simulationNotice": "This is a simulation. No real login is performed."
+    "subtitleV2": "Sign in to manage your team",
+    "googleButton": "Sign in with Google",
+    "simulationNotice": "This is a simulation. No real login is performed.",
+    "modalTitle": "Choose an account",
+    "modalSubtitle": "to continue to Futsal Manager"
   },
   "clubInfo": {
     "editTitle": "Edit Club Information",
@@ -46,6 +51,26 @@
     "memberCount": "Number of Members",
     "clubHistory": "Club History",
     "savedSuccess": "Saved successfully!"
+  },
+  "teams": {
+    "manageTitle": "Manage Teams",
+    "addTeam": "Add Team",
+    "addNewTeam": "Add New Team",
+    "deleteConfirm": "Are you sure you want to delete this team?",
+    "name": "Team Name",
+    "coachInviteTooltip": "Generate coach invite link",
+    "linkGenerated": "Link generated!",
+    "linkCopied": "Copied to clipboard.",
+    "selectTeam": "Select Team"
+  },
+  "ageGroups": {
+    "Petizes": "U-7",
+    "Traquinas": "U-9",
+    "Benjamins": "U-11",
+    "Infantis": "U-13",
+    "Iniciados": "U-15",
+    "Juvenis": "U-17",
+    "Juniores": "U-19"
   },
   "viewTeam": {
     "rosterTitle": "Team Roster",
@@ -61,16 +86,36 @@
   "roster": {
     "manageTitle": "Manage Roster",
     "addAthlete": "Add Athlete",
+    "invitePlayers": "Invite Players",
     "deleteConfirm": "Are you sure you want to delete this athlete?",
     "editAthlete": "Edit Athlete",
-    "addNewAthlete": "Add New Athlete",
+    "addNewAthlete": "Add New Athlete"
+  },
+  "athlete": {
     "name": "Name",
     "number": "Number",
-    "position": "Position"
+    "position": "Position",
+    "photoUrl": "Photo URL",
+    "dob": "Date of Birth",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "strongFoot": "Strong Foot",
+    "rightFoot": "Right",
+    "leftFoot": "Left",
+    "bothFeet": "Both",
+    "founded": "Founded",
+    "members": "Members",
+    "gameVs": "Game vs",
+    "date": "Date",
+    "meetAt": "Meet at",
+    "location": "Location",
+    "reportVs": "Report: vs"
   },
   "trainingPlanner": {
     "deleteUnitConfirm": "Are you sure you want to delete this training unit?",
     "deleteExerciseConfirm": "Are you sure you want to delete this exercise? It will be removed from all training units.",
+    "newUnitDefaultTitle": "New Training Unit",
+    "newExerciseDefaultTitle": "New Exercise",
     "editUnit": "Edit Training Unit",
     "createUnit": "Create Training Unit",
     "unitTitle": "Unit Title",
@@ -134,13 +179,12 @@
     "YellowCard": "Yellow Card",
     "RedCard": "Red Card"
   },
-  "athlete": {
-    "founded": "Founded",
-    "members": "Members",
-    "gameVs": "Game vs",
-    "date": "Date",
-    "meetAt": "Meet at",
-    "location": "Location",
-    "reportVs": "Report: vs"
+  "reports": {
+    "title": "Game Reports",
+    "editTitle": "Edit Report",
+    "shareWithAthletes": "Share with Athletes",
+    "shared": "Shared",
+    "notShared": "Not Shared",
+    "noReports": "No finished game reports available."
   }
 }

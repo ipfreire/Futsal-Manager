@@ -10,7 +10,9 @@
     "share": "Partilhar",
     "unshare": "Deixar de Partilhar",
     "noDataAvailable": "Não existem dados disponíveis.",
-    "saveAndShare": "Guardar e Partilhar"
+    "saveAndShare": "Guardar e Partilhar",
+    "min": "min",
+    "minutes": "Minutos"
   },
   "roles": {
     "Director": "Diretor",
@@ -19,6 +21,7 @@
   },
   "navigation": {
     "ClubInfo": "Informação do Clube",
+    "Teams": "Equipas",
     "ViewTeamData": "Ver Dados da Equipa",
     "Roster": "Plantel",
     "TrainingPlanner": "Planeador de Treinos",
@@ -27,17 +30,19 @@
     "Callups": "Convocatórias",
     "TrainingUnits": "Unidades de Treino",
     "SharedExercises": "Exercícios Partilhados",
-    "GameReports": "Relatórios de Jogo"
+    "GameReports": "Relatórios de Jogo",
+    "MyProfile": "O Meu Perfil"
   },
   "layout": {
     "collapse": "Recolher",
     "logout": "Sair"
   },
   "login": {
-    "subtitle": "Selecione a sua função para continuar",
-    "selectRole": "Selecione a Função",
-    "loginButton": "Entrar",
-    "simulationNotice": "Isto é uma simulação. Nenhum login real é realizado."
+    "subtitleV2": "Faça login para gerir a sua equipa",
+    "googleButton": "Entrar com o Google",
+    "simulationNotice": "Isto é uma simulação. Nenhum login real é realizado.",
+    "modalTitle": "Escolha uma conta",
+    "modalSubtitle": "para continuar para Futsal Manager"
   },
   "clubInfo": {
     "editTitle": "Editar Informação do Clube",
@@ -46,6 +51,26 @@
     "memberCount": "Número de Sócios",
     "clubHistory": "História do Clube",
     "savedSuccess": "Guardado com sucesso!"
+  },
+  "teams": {
+    "manageTitle": "Gerir Equipas",
+    "addTeam": "Adicionar Equipa",
+    "addNewTeam": "Adicionar Nova Equipa",
+    "deleteConfirm": "Tem a certeza que quer eliminar esta equipa?",
+    "name": "Nome da Equipa",
+    "coachInviteTooltip": "Gerar link de convite para treinador",
+    "linkGenerated": "Link gerado!",
+    "linkCopied": "Copiado para a área de transferência.",
+    "selectTeam": "Selecionar Equipa"
+  },
+  "ageGroups": {
+    "Petizes": "Petizes",
+    "Traquinas": "Traquinas",
+    "Benjamins": "Benjamins",
+    "Infantis": "Infantis",
+    "Iniciados": "Iniciados",
+    "Juvenis": "Juvenis",
+    "Juniores": "Juniores"
   },
   "viewTeam": {
     "rosterTitle": "Plantel da Equipa",
@@ -61,16 +86,36 @@
   "roster": {
     "manageTitle": "Gerir Plantel",
     "addAthlete": "Adicionar Atleta",
+    "invitePlayers": "Convidar Jogadores",
     "deleteConfirm": "Tem a certeza que quer eliminar este atleta?",
     "editAthlete": "Editar Atleta",
-    "addNewAthlete": "Adicionar Novo Atleta",
+    "addNewAthlete": "Adicionar Novo Atleta"
+  },
+  "athlete": {
     "name": "Nome",
     "number": "Número",
-    "position": "Posição"
+    "position": "Posição",
+    "photoUrl": "URL da Fotografia",
+    "dob": "Data de Nascimento",
+    "height": "Altura (cm)",
+    "weight": "Peso (kg)",
+    "strongFoot": "Pé Forte",
+    "rightFoot": "Direito",
+    "leftFoot": "Esquerdo",
+    "bothFeet": "Ambos",
+    "founded": "Fundado",
+    "members": "Sócios",
+    "gameVs": "Jogo vs",
+    "date": "Data",
+    "meetAt": "Concentração",
+    "location": "Local",
+    "reportVs": "Relatório: vs"
   },
   "trainingPlanner": {
     "deleteUnitConfirm": "Tem a certeza que quer eliminar esta unidade de treino?",
     "deleteExerciseConfirm": "Tem a certeza que quer eliminar este exercício? Ele será removido de todas as unidades de treino.",
+    "newUnitDefaultTitle": "Nova Unidade de Treino",
+    "newExerciseDefaultTitle": "Novo Exercício",
     "editUnit": "Editar Unidade de Treino",
     "createUnit": "Criar Unidade de Treino",
     "unitTitle": "Título da Unidade",
@@ -134,13 +179,12 @@
     "YellowCard": "Cartão Amarelo",
     "RedCard": "Cartão Vermelho"
   },
-  "athlete": {
-    "founded": "Fundado",
-    "members": "Sócios",
-    "gameVs": "Jogo vs",
-    "date": "Data",
-    "meetAt": "Concentração",
-    "location": "Local",
-    "reportVs": "Relatório: vs"
+  "reports": {
+    "title": "Relatórios de Jogo",
+    "editTitle": "Editar Relatório",
+    "shareWithAthletes": "Partilhar com Atletas",
+    "shared": "Partilhado",
+    "notShared": "Não Partilhado",
+    "noReports": "Não existem relatórios de jogo finalizados."
   }
 }

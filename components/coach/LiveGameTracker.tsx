@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 import { useI18n } from '../../context/I18nContext';
-import { Athlete, Game, GameEvent, GameEventType } from '../../types';
+import { Game, GameEvent, GameEventType } from '../../types';
 import useTimer from '../../hooks/useTimer';
 import { Play, Pause, RefreshCw, Goal, Shield, Flag, Square, FileText, CheckCircle } from 'lucide-react';
 
@@ -15,8 +15,16 @@ const LiveGameTracker: React.FC = () => {
     const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [newOpponent, setNewOpponent] = useState('');
+    const [gameDurationMinutes, setGameDurationMinutes] = useState(20);
     
-    const { time, isRunning, start, pause, reset, formattedTime } = useTimer();
+    const { time, isRunning, start, pause, reset, formattedTime } = useTimer(gameDurationMinutes * 60);
+
+    useEffect(() => {
+        if (!isRunning) {
+            reset(gameDurationMinutes * 60);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [gameDurationMinutes]);
     
     const selectedPlayer = roster.find(p => p.id === selectedPlayerId);
 
@@ -30,6 +38,7 @@ const LiveGameTracker: React.FC = () => {
         
         const newGame: Game = {
             id: `game-${Date.now()}`,
+            teamId: roster[0]?.teamId || '', // Assume all players on one team
             opponent: newOpponent,
             date: new Date().toISOString().split('T')[0],
             status: 'live',
@@ -41,6 +50,7 @@ const LiveGameTracker: React.FC = () => {
             isShared: false,
         };
         setGames(prev => [...prev, newGame]);
+        reset(gameDurationMinutes * 60);
         setNewOpponent('');
     };
     
@@ -105,7 +115,7 @@ const LiveGameTracker: React.FC = () => {
             };
             updateLiveGame(finalGame);
             setIsReportModalOpen(false);
-            reset();
+            reset(gameDurationMinutes * 60);
         };
 
         return (
@@ -115,13 +125,17 @@ const LiveGameTracker: React.FC = () => {
                     <div className="bg-gray-900 p-2 rounded-md max-h-60 overflow-y-auto mb-4">
                         <h4 className="font-semibold text-gray-300 mb-2">{t('gameTracker.gameLog')}</h4>
                         <ul>
-                            {[...liveGame.events].reverse().map(e => (
+                            {[...liveGame.events].reverse().map(e => {
+                                const eventTime = (gameDurationMinutes * 60) - e.timestamp;
+                                const minutes = Math.floor(eventTime / 60).toString().padStart(2, '0');
+                                const seconds = (eventTime % 60).toString().padStart(2, '0');
+                                return(
                                 <li key={e.id} className="text-sm flex justify-between p-1 border-b border-gray-700">
-                                    <span>{e.period}ªP - {new Date(e.timestamp * 1000).toISOString().substr(14, 5)}</span>
+                                    <span>{e.period}ªP - {minutes}:{seconds}</span>
                                     <span>{e.playerName}</span>
                                     <span>{t(`gameEvents.${e.type.replace(/\s/g, '')}`)}</span>
                                 </li>
-                            ))}
+                            )})}
                         </ul>
                     </div>
                     <textarea value={observations} onChange={e => setObservations(e.target.value)} placeholder={t('gameTracker.reportObservations')} className="w-full bg-gray-700 p-2 rounded mb-4" rows={4}/>
@@ -159,9 +173,19 @@ const LiveGameTracker: React.FC = () => {
                         <div className="text-2xl font-bold">Unidos FC <span className="text-indigo-400">{liveGame.score.own}</span></div>
                         <div className="text-center">
                             <div className="text-4xl font-mono">{formattedTime}</div>
+                             <div className="flex items-center justify-center space-x-2 mt-2">
+                                <label className="text-xs text-gray-400">{t('common.minutes')}:</label>
+                                <input 
+                                    type="number" 
+                                    value={gameDurationMinutes} 
+                                    onChange={(e) => setGameDurationMinutes(Number(e.target.value))}
+                                    className="w-16 bg-gray-700 text-white text-center rounded p-1"
+                                    disabled={isRunning}
+                                />
+                            </div>
                             <div className="flex justify-center space-x-2 mt-2">
                                 <button onClick={isRunning ? pause : start} className="p-2 bg-gray-700 rounded-full">{isRunning ? <Pause/> : <Play/>}</button>
-                                <button onClick={() => reset(0)} className="p-2 bg-gray-700 rounded-full"><RefreshCw/></button>
+                                <button onClick={() => reset(gameDurationMinutes * 60)} className="p-2 bg-gray-700 rounded-full"><RefreshCw/></button>
                             </div>
                         </div>
                         <div className="text-2xl font-bold"><span className="text-red-400">{liveGame.score.opponent}</span> {liveGame.opponent}</div>
@@ -210,13 +234,17 @@ const LiveGameTracker: React.FC = () => {
                  <div>
                     <h4 className="font-bold mb-2">{t('gameTracker.gameLog')}</h4>
                     <ul className="h-64 overflow-y-auto space-y-1 text-sm pr-2">
-                        {liveGame.events.map(e => (
+                        {liveGame.events.map(e => {
+                            const eventTime = (gameDurationMinutes * 60) - e.timestamp;
+                            const minutes = Math.floor(eventTime / 60).toString().padStart(2, '0');
+                            const seconds = (eventTime % 60).toString().padStart(2, '0');
+                            return (
                              <li key={e.id} className="flex items-center justify-between bg-gray-700 p-1 rounded">
-                                <span className="font-mono text-gray-400">{e.period}ª - {new Date(e.timestamp * 1000).toISOString().substr(14, 5)}</span>
+                                <span className="font-mono text-gray-400">{e.period}ª - {minutes}:{seconds}</span>
                                 <span className="flex items-center gap-1"><EventIcon type={e.type}/>{t(`gameEvents.${e.type.replace(/\s/g, '')}`)}</span>
                                 <span>{e.playerName}</span>
                             </li>
-                        ))}
+                        )})}
                     </ul>
                 </div>
             </div>

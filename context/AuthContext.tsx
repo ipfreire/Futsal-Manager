@@ -1,11 +1,10 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { User, UserRole } from '../types';
+import { User } from '../types';
 import { MOCK_USERS } from '../constants';
 
 interface AuthContextType {
   user: User | null;
-  login: (role: UserRole) => void;
+  login: (userId: string) => void;
   logout: () => void;
 }
 
@@ -14,9 +13,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (role: UserRole) => {
+  const login = (userId: string) => {
     // In a real app, this would involve an API call. Here we simulate it.
-    const mockUser = MOCK_USERS.find(u => u.role === role);
+    const mockUser = MOCK_USERS.find(u => u.id === userId);
     setUser(mockUser || null);
   };
 

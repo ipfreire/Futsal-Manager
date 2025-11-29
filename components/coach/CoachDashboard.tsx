@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
-import MainLayout, { Users, ClipboardList, BarChart2, Newspaper } from '../layout/MainLayout';
+import MainLayout, { Users, ClipboardList, BarChart2, Newspaper, FileText } from '../layout/MainLayout';
 import RosterManagement from './RosterManagement';
 import TrainingPlanner from './TrainingPlanner';
 import LiveGameTracker from './LiveGameTracker';
 import GameDayCallup from './GameDayCallup';
+import GameReports from './GameReports';
 import { useI18n } from '../../context/I18nContext';
 
 const CoachDashboard: React.FC = () => {
@@ -16,6 +17,7 @@ const CoachDashboard: React.FC = () => {
     { name: 'Training Planner', icon: <ClipboardList className="h-5 w-5" />, onClick: () => setActiveView('Training Planner') },
     { name: 'Game Day Call-up', icon: <Newspaper className="h-5 w-5" />, onClick: () => setActiveView('Game Day Call-up') },
     { name: 'Live Game Tracker', icon: <BarChart2 className="h-5 w-5" />, onClick: () => setActiveView('Live Game Tracker') },
+    { name: 'Game Reports', icon: <FileText className="h-5 w-5" />, onClick: () => setActiveView('Game Reports') },
   ];
   
   const translatedNavItems = navItems.map(item => ({...item, name: t(`navigation.${item.name.replace(/\s|-/g, '')}`)}))
@@ -32,6 +34,8 @@ const CoachDashboard: React.FC = () => {
         return <GameDayCallup />;
       case 'Live Game Tracker':
         return <LiveGameTracker />;
+      case 'Game Reports':
+        return <GameReports />;
       default:
         return <RosterManagement />;
     }

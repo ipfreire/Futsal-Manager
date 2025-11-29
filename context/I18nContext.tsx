@@ -22,9 +22,11 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useLocalStorage<Language>('futsal_language', 'pt');
   const [translations, setTranslations] = useState<Translations>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTranslations = async () => {
+      setIsLoading(true);
       try {
         const [enResponse, ptResponse] = await Promise.all([
           fetch('./locales/en.json'),
@@ -35,6 +37,8 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setTranslations({ en, pt });
       } catch (error) {
         console.error('Failed to load translation files:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTranslations();
@@ -44,6 +48,11 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const langFile = translations[language];
     return getNestedTranslation(langFile, key);
   };
+
+  if (isLoading) {
+    // Render a blank screen or a loading spinner while translations are loading
+    return <div className="flex items-center justify-center min-h-screen bg-gray-900"></div>;
+  }
 
   return (
     <I18nContext.Provider value={{ language, setLanguage, t }}>

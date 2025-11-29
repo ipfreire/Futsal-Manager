@@ -1,18 +1,20 @@
 import React, { useState, useRef, DragEvent } from 'react';
 import { useData } from '../../context/DataContext';
 import { useI18n } from '../../context/I18nContext';
-import { TrainingExercise, TrainingExerciseElement, TrainingPlan, ExerciseCategory } from '../../types';
+import { TrainingExercise, TrainingExerciseElement, TrainingPlan, ExerciseCategory, TrainingPlanExercise } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 import FutsalCourt from '../shared/FutsalCourt';
-// FIX: Import missing 'Footprints', 'Disc', and 'Square' icons from 'lucide-react'.
-import { PlusCircle, Trash2, Share2, Edit, BookOpen, List, Footprints, Disc, Square } from 'lucide-react';
+import { PlusCircle, Trash2, Share2, Edit, BookOpen, List, Footprints, Disc, Square, Clock } from 'lucide-react';
 
 const TrainingPlanner: React.FC = () => {
     const { trainingPlans, setTrainingPlans, exercises, setExercises } = useData();
+    const { user } = useAuth();
     const { t } = useI18n();
     const [view, setView] = useState<'units' | 'exercises'>('units');
     const [editingPlan, setEditingPlan] = useState<Partial<TrainingPlan> | null>(null);
     const [editingExercise, setEditingExercise] = useState<Partial<TrainingExercise> | null>(null);
-
+    const [viewingExercise, setViewingExercise] = useState<TrainingExercise | null>(null);
+    
     // Group exercises by category for the library view
     const exercisesByCategory = exercises.reduce((acc, ex) => {
         if (!acc[ex.category]) {
@@ -24,18 +26,19 @@ const TrainingPlanner: React.FC = () => {
 
     // Handlers
     const handleSavePlan = () => {
-        if (!editingPlan) return;
+        if (!editingPlan || !user?.teamId) return;
         setTrainingPlans(prev => {
             if (editingPlan.id) {
                 return prev.map(p => p.id === editingPlan.id ? { ...p, ...editingPlan } as TrainingPlan : p);
             }
             const newPlan: TrainingPlan = {
                 id: `tp-${Date.now()}`,
-                title: 'New Training Unit',
+                teamId: user.teamId,
+                title: t('trainingPlanner.newUnitDefaultTitle'),
                 date: new Date().toISOString().split('T')[0],
                 isShared: false,
                 observations: '',
-                exerciseIds: [],
+                exercises: [],
                 ...editingPlan,
             };
             return [...prev, newPlan];
@@ -50,14 +53,15 @@ const TrainingPlanner: React.FC = () => {
     };
     
     const handleSaveExercise = () => {
-        if (!editingExercise) return;
+        if (!editingExercise || !user?.teamId) return;
         setExercises(prev => {
             if (editingExercise.id) {
                 return prev.map(e => e.id === editingExercise.id ? { ...e, ...editingExercise } as TrainingExercise : e);
             }
             const newEx: TrainingExercise = {
                 id: `ex-${Date.now()}`,
-                title: 'New Exercise',
+                teamId: user.teamId,
+                title: t('trainingPlanner.newExerciseDefaultTitle'),
                 category: ExerciseCategory.Attack,
                 athleteCount: 'N/A',
                 observations: '',
@@ -76,23 +80,61 @@ const TrainingPlanner: React.FC = () => {
             // Also remove from any training plans
             setTrainingPlans(prev => prev.map(p => ({
                 ...p,
-                exerciseIds: p.exerciseIds.filter(id => id !== exerciseId)
+                exercises: p.exercises.filter(ex => ex.exerciseId !== exerciseId)
             })));
         }
     };
 
-    const togglePlanExercise = (plan: Partial<TrainingPlan>, exerciseId: string) => {
-        const currentIds = plan.exerciseIds || [];
-        const newIds = currentIds.includes(exerciseId)
-            ? currentIds.filter(id => id !== exerciseId)
-            : [...currentIds, exerciseId];
-        setEditingPlan({...plan, exerciseIds: newIds});
+    const updatePlanExercise = (plan: Partial<TrainingPlan>, exerciseId: string, durationStr: string) => {
+        const duration = parseInt(durationStr, 10) || 0;
+        const currentExercises = plan.exercises || [];
+        const existingIndex = currentExercises.findIndex(e => e.exerciseId === exerciseId);
+
+        if (existingIndex > -1) {
+            const updatedExercises = [...currentExercises];
+            updatedExercises[existingIndex] = { ...updatedExercises[existingIndex], duration };
+            setEditingPlan({...plan, exercises: updatedExercises});
+        }
+    };
+
+    const togglePlanExerciseSelection = (plan: Partial<TrainingPlan>, exerciseId: string) => {
+        const currentExercises = plan.exercises || [];
+        const isSelected = currentExercises.some(e => e.exerciseId === exerciseId);
+        let newExercises: TrainingPlanExercise[];
+
+        if (isSelected) {
+            newExercises = currentExercises.filter(e => e.exerciseId !== exerciseId);
+        } else {
+            newExercises = [...currentExercises, { exerciseId, duration: 15 }]; // Default duration
+        }
+        setEditingPlan({...plan, exercises: newExercises});
     };
     
+    const ExerciseDetailModal = ({exercise, onClose}: {exercise: TrainingExercise | null, onClose: () => void}) => {
+      if(!exercise) return null;
+      return (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] p-4" onClick={onClose}>
+            <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-2xl" onClick={e => e.stopPropagation()}>
+                <h3 className="text-xl font-bold mb-2">{exercise.title}</h3>
+                <p className="text-sm text-gray-400 mb-4">{exercise.observations}</p>
+                <FutsalCourt>
+                    {exercise.elements.map(el => (
+                        <g key={el.id} transform={`translate(${el.position.x * 10}, ${el.position.y * 5})`}>
+                            {el.type === 'player' && <><circle r="15" fill="blue" stroke="white" strokeWidth="2" /><text x="0" y="5" fill="white" textAnchor="middle" fontSize="12">{el.label}</text></>}
+                            {el.type === 'ball' && <circle r="8" fill="orange" />}
+                            {el.type === 'cone' && <path d="M-10 10 L10 10 L0 -10 Z" fill="red" />}
+                            {el.type === 'note' && <text fill="yellow" fontSize="12">{el.label}</text>}
+                        </g>
+                    ))}
+                </FutsalCourt>
+            </div>
+        </div>
+    )};
+
     // UI Components
     const PlanEditor = () => (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-3xl">
+            <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
                 <h3 className="text-xl font-bold mb-4">{editingPlan?.id ? t('trainingPlanner.editUnit') : t('trainingPlanner.createUnit')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="text" value={editingPlan?.title || ''} onChange={e => setEditingPlan({...editingPlan, title: e.target.value})} placeholder={t('trainingPlanner.unitTitle')} className="bg-gray-700 p-2 rounded"/>
@@ -100,15 +142,33 @@ const TrainingPlanner: React.FC = () => {
                     <textarea value={editingPlan?.observations || ''} onChange={e => setEditingPlan({...editingPlan, observations: e.target.value})} placeholder={t('trainingPlanner.observationsPlaceholder')} className="md:col-span-2 bg-gray-700 p-2 rounded" rows={2}/>
                 </div>
                 <h4 className="font-semibold mt-4 mb-2">{t('trainingPlanner.selectExercises')}</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-64 overflow-y-auto">
-                    {exercises.map(ex => (
-                        <label key={ex.id} className={`flex items-center space-x-2 p-2 rounded cursor-pointer text-sm ${editingPlan?.exerciseIds?.includes(ex.id) ? 'bg-indigo-600' : 'bg-gray-700'}`}>
-                            <input type="checkbox" checked={editingPlan?.exerciseIds?.includes(ex.id)} onChange={() => togglePlanExercise(editingPlan!, ex.id)} className="form-checkbox h-4 w-4 text-indigo-500 bg-gray-900 border-gray-600 rounded focus:ring-indigo-500"/>
-                            <span>{ex.title}</span>
-                        </label>
-                    ))}
+                <div className="flex-grow overflow-y-auto space-y-2 pr-2">
+                    {exercises.map(ex => {
+                        const planExercise = editingPlan?.exercises?.find(e => e.exerciseId === ex.id);
+                        const isSelected = !!planExercise;
+                        return (
+                            <div key={ex.id} className={`flex items-center justify-between p-2 rounded ${isSelected ? 'bg-indigo-900/50' : 'bg-gray-700'}`}>
+                                <label className="flex items-center space-x-2 cursor-pointer text-sm">
+                                    <input type="checkbox" checked={isSelected} onChange={() => togglePlanExerciseSelection(editingPlan!, ex.id)} className="form-checkbox h-4 w-4 text-indigo-500 bg-gray-900 border-gray-600 rounded focus:ring-indigo-500"/>
+                                    <span>{ex.title}</span>
+                                </label>
+                                {isSelected && (
+                                    <div className="flex items-center space-x-2">
+                                        <Clock size={16} className="text-gray-400"/>
+                                        <input 
+                                            type="number" 
+                                            value={planExercise.duration}
+                                            onChange={(e) => updatePlanExercise(editingPlan!, ex.id, e.target.value)}
+                                            className="w-16 bg-gray-600 text-white text-center rounded p-1"
+                                        />
+                                        <span className="text-sm text-gray-400">{t('common.min')}</span>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
-                <div className="flex justify-end space-x-2 pt-4">
+                <div className="flex justify-end space-x-2 pt-4 border-t border-gray-700 mt-4">
                     <button onClick={() => setEditingPlan(null)} className="py-2 px-4 rounded-md text-sm font-medium text-gray-300 bg-gray-600 hover:bg-gray-500">{t('common.cancel')}</button>
                     <button onClick={handleSavePlan} className="py-2 px-4 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">{t('trainingPlanner.saveUnit')}</button>
                 </div>
@@ -117,7 +177,7 @@ const TrainingPlanner: React.FC = () => {
     );
 
     const ExerciseEditor = () => {
-        const courtRef = useRef<SVGSVGElement>(null);
+        const courtRef = useRef<HTMLDivElement>(null);
         const onDragStart = (e: DragEvent, type: 'player' | 'cone' | 'ball' | 'note') => e.dataTransfer.setData('element-type', type);
         const onDrop = (e: DragEvent) => {
             e.preventDefault();
@@ -125,8 +185,10 @@ const TrainingPlanner: React.FC = () => {
             if (!type || !courtRef.current) return;
 
             const courtBounds = courtRef.current.getBoundingClientRect();
+            // We use clientX/Y and bounds to calculate relative position in %
             const x = parseFloat(((e.clientX - courtBounds.left) / courtBounds.width * 100).toFixed(2));
             const y = parseFloat(((e.clientY - courtBounds.top) / courtBounds.height * 100).toFixed(2));
+
 
             const newElement: TrainingExerciseElement = {
                 id: `el-${Date.now()}`, type, position: { x, y },
@@ -139,9 +201,9 @@ const TrainingPlanner: React.FC = () => {
 
         return (
              <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-                <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-4xl">
+                <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
                     <h3 className="text-xl font-bold mb-4">{editingExercise?.id ? t('trainingPlanner.editExercise') : t('trainingPlanner.createExercise')}</h3>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-grow overflow-y-auto pr-2">
                         <div>
                             <input type="text" value={editingExercise?.title || ''} onChange={e => setEditingExercise({...editingExercise, title: e.target.value})} placeholder={t('trainingPlanner.exerciseTitle')} className="w-full bg-gray-700 p-2 rounded mb-2"/>
                             <select value={editingExercise?.category || ''} onChange={e => setEditingExercise({...editingExercise, category: e.target.value as ExerciseCategory})} className="w-full bg-gray-700 p-2 rounded mb-2">
@@ -171,7 +233,7 @@ const TrainingPlanner: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-end space-x-2 pt-4">
+                    <div className="flex justify-end space-x-2 pt-4 border-t border-gray-700 mt-4">
                         <button onClick={() => setEditingExercise(null)} className="py-2 px-4 rounded-md text-sm font-medium text-gray-300 bg-gray-600 hover:bg-gray-500">{t('common.cancel')}</button>
                         <button onClick={handleSaveExercise} className="py-2 px-4 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">{t('trainingPlanner.saveExercise')}</button>
                     </div>
@@ -184,6 +246,8 @@ const TrainingPlanner: React.FC = () => {
         <div>
             {editingPlan && <PlanEditor />}
             {editingExercise && <ExerciseEditor />}
+            {viewingExercise && <ExerciseDetailModal exercise={viewingExercise} onClose={() => setViewingExercise(null)} />}
+
             <div className="flex border-b border-gray-700 mb-6">
                 <button onClick={() => setView('units')} className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${view === 'units' ? 'border-b-2 border-indigo-500 text-white' : 'text-gray-400'}`}><List/> {t('trainingPlanner.trainingUnits')}</button>
                 <button onClick={() => setView('exercises')} className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${view === 'exercises' ? 'border-b-2 border-indigo-500 text-white' : 'text-gray-400'}`}><BookOpen/> {t('trainingPlanner.exerciseLibrary')}</button>
@@ -193,7 +257,7 @@ const TrainingPlanner: React.FC = () => {
                 <div>
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-xl font-bold">{t('trainingPlanner.trainingUnits')}</h3>
-                        <button onClick={() => setEditingPlan({})} className="inline-flex items-center gap-2 py-2 px-4 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"><PlusCircle size={18}/> {t('trainingPlanner.createUnitButton')}</button>
+                        <button onClick={() => setEditingPlan({ exercises: [] })} className="inline-flex items-center gap-2 py-2 px-4 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"><PlusCircle size={18}/> {t('trainingPlanner.createUnitButton')}</button>
                     </div>
                     <div className="space-y-3">
                         {trainingPlans.map(p => (
@@ -210,9 +274,12 @@ const TrainingPlanner: React.FC = () => {
                                     </div>
                                 </div>
                                 <ul className="mt-2 space-y-1">
-                                    {p.exerciseIds.map(exId => {
-                                        const ex = exercises.find(e => e.id === exId);
-                                        return ex ? <li key={exId} className="text-sm text-gray-300 bg-gray-700 px-2 py-1 rounded">{ex.title} <span className="text-xs text-gray-500">({t(`exerciseCategories.${ex.category.replace(' ', '')}`)})</span></li> : null;
+                                    {p.exercises.map(planEx => {
+                                        const ex = exercises.find(e => e.id === planEx.exerciseId);
+                                        return ex ? <li key={ex.id} onClick={() => setViewingExercise(ex)} className="text-sm text-gray-300 bg-gray-700 px-2 py-1 rounded flex justify-between items-center cursor-pointer hover:bg-gray-600">
+                                            <span>{ex.title} <span className="text-xs text-gray-500">({t(`exerciseCategories.${ex.category.replace(' ', '')}`)})</span></span>
+                                            <span className="text-xs text-indigo-300">{planEx.duration} {t('common.min')}</span>
+                                        </li> : null;
                                     })}
                                 </ul>
                             </div>
@@ -225,7 +292,7 @@ const TrainingPlanner: React.FC = () => {
                  <div>
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-xl font-bold">{t('trainingPlanner.exerciseLibrary')}</h3>
-                        <button onClick={() => setEditingExercise({})} className="inline-flex items-center gap-2 py-2 px-4 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"><PlusCircle size={18}/> {t('trainingPlanner.createExerciseButton')}</button>
+                        <button onClick={() => setEditingExercise({ elements: [] })} className="inline-flex items-center gap-2 py-2 px-4 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"><PlusCircle size={18}/> {t('trainingPlanner.createExerciseButton')}</button>
                     </div>
                     <div className="space-y-4">
                         {(Object.keys(exercisesByCategory) as ExerciseCategory[]).map(category => (
