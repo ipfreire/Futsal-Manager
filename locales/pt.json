@@ -1,0 +1,146 @@
+{
+  "app": {
+    "title": "Futsal Manager"
+  },
+  "common": {
+    "saveChanges": "Guardar Alterações",
+    "cancel": "Cancelar",
+    "date": "Data",
+    "observations": "Observações",
+    "share": "Partilhar",
+    "unshare": "Deixar de Partilhar",
+    "noDataAvailable": "Não existem dados disponíveis.",
+    "saveAndShare": "Guardar e Partilhar"
+  },
+  "roles": {
+    "Director": "Diretor",
+    "Coach": "Equipa Técnica",
+    "Athlete": "Atleta"
+  },
+  "navigation": {
+    "ClubInfo": "Informação do Clube",
+    "ViewTeamData": "Ver Dados da Equipa",
+    "Roster": "Plantel",
+    "TrainingPlanner": "Planeador de Treinos",
+    "GameDayCallup": "Convocatória",
+    "LiveGameTracker": "Registo de Jogo ao Vivo",
+    "Callups": "Convocatórias",
+    "TrainingUnits": "Unidades de Treino",
+    "SharedExercises": "Exercícios Partilhados",
+    "GameReports": "Relatórios de Jogo"
+  },
+  "layout": {
+    "collapse": "Recolher",
+    "logout": "Sair"
+  },
+  "login": {
+    "subtitle": "Selecione a sua função para continuar",
+    "selectRole": "Selecione a Função",
+    "loginButton": "Entrar",
+    "simulationNotice": "Isto é uma simulação. Nenhum login real é realizado."
+  },
+  "clubInfo": {
+    "editTitle": "Editar Informação do Clube",
+    "clubName": "Nome do Clube",
+    "foundationDate": "Data de Fundação",
+    "memberCount": "Número de Sócios",
+    "clubHistory": "História do Clube",
+    "savedSuccess": "Guardado com sucesso!"
+  },
+  "viewTeam": {
+    "rosterTitle": "Plantel da Equipa",
+    "goals": "Golos",
+    "assists": "Assistências",
+    "trainingPlansTitle": "Planos de Treino",
+    "date": "Data",
+    "gameReportsTitle": "Relatórios de Jogo",
+    "score": "Resultado",
+    "noTrainingPlans": "Não existem planos de treino disponíveis.",
+    "noGameReports": "Não existem relatórios de jogo disponíveis."
+  },
+  "roster": {
+    "manageTitle": "Gerir Plantel",
+    "addAthlete": "Adicionar Atleta",
+    "deleteConfirm": "Tem a certeza que quer eliminar este atleta?",
+    "editAthlete": "Editar Atleta",
+    "addNewAthlete": "Adicionar Novo Atleta",
+    "name": "Nome",
+    "number": "Número",
+    "position": "Posição"
+  },
+  "trainingPlanner": {
+    "deleteUnitConfirm": "Tem a certeza que quer eliminar esta unidade de treino?",
+    "deleteExerciseConfirm": "Tem a certeza que quer eliminar este exercício? Ele será removido de todas as unidades de treino.",
+    "editUnit": "Editar Unidade de Treino",
+    "createUnit": "Criar Unidade de Treino",
+    "unitTitle": "Título da Unidade",
+    "observationsPlaceholder": "Observações (ex: tempo por exercício)",
+    "selectExercises": "Selecionar Exercícios:",
+    "saveUnit": "Guardar Unidade",
+    "editExercise": "Editar Exercício",
+    "createExercise": "Criar Exercício",
+    "exerciseTitle": "Título do Exercício",
+    "athleteCountPlaceholder": "Nº de Atletas (ex: 2v1, 5+GR)",
+    "player": "Jogador",
+    "ball": "Bola",
+    "cone": "Cone",
+    "note": "Nota",
+    "saveExercise": "Guardar Exercício",
+    "trainingUnits": "Unidades de Treino",
+    "exerciseLibrary": "Biblioteca de Exercícios",
+    "createUnitButton": "Criar Unidade",
+    "createExerciseButton": "Criar Exercício",
+    "athletes": "Atletas"
+  },
+  "exerciseCategories": {
+    "Attack": "Ataque",
+    "Defense": "Defesa",
+    "SetPiece": "Bolas Paradas"
+  },
+  "callup": {
+    "title": "Convocatórias",
+    "newCallup": "Nova Convocatória",
+    "createNew": "Criar Nova Convocatória",
+    "opponent": "Adversário",
+    "meetTime": "Hora de Concentração",
+    "location": "Local",
+    "selectPlayers": "Selecionar Jogadores",
+    "shareCallup": "Partilhar Convocatória",
+    "calledUp": "Convocados"
+  },
+  "gameTracker": {
+    "opponent": "Adversário",
+    "onCourt": "Em Campo",
+    "bench": "Banco",
+    "actionsFor": "Ações para",
+    "gameLog": "Registo de Jogo",
+    "firstHalf": "1ª Parte",
+    "secondHalf": "2ª Parte",
+    "endGame": "Terminar Jogo",
+    "startGame": "Começar Jogo",
+    "newGameTitle": "Começar Novo Jogo",
+    "enterOpponent": "Nome do Adversário",
+    "finalReportTitle": "Relatório Final do Jogo",
+    "reportObservations": "Observações Finais..."
+  },
+  "gameEvents": {
+    "Goal": "Golo",
+    "Assist": "Assistência",
+    "ShotOnTarget": "Remate à Baliza",
+    "ShotOffTarget": "Remate ao Lado",
+    "Interception": "Interceção",
+    "Tackle": "Corte",
+    "Foul": "Falta",
+    "YellowCard": "Cartão Amarelo",
+    "RedCard": "Cartão Vermelho"
+  },
+  "athlete": {
+    "founded": "Fundado",
+    "members": "Sócios",
+    "gameVs": "Jogo vs",
+    "date": "Data",
+    "meetAt": "Concentração",
+    "location": "Local",
+    "reportVs": "Relatório: vs"
+  }
+}

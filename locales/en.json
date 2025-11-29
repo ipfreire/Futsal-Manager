@@ -1,0 +1,146 @@
+{
+  "app": {
+    "title": "Futsal Manager"
+  },
+  "common": {
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "date": "Date",
+    "observations": "Observations",
+    "share": "Share",
+    "unshare": "Unshare",
+    "noDataAvailable": "No data available.",
+    "saveAndShare": "Save & Share"
+  },
+  "roles": {
+    "Director": "Director",
+    "Coach": "Technical Team",
+    "Athlete": "Athlete"
+  },
+  "navigation": {
+    "ClubInfo": "Club Info",
+    "ViewTeamData": "View Team Data",
+    "Roster": "Roster",
+    "TrainingPlanner": "Training Planner",
+    "GameDayCallup": "Game Day Call-up",
+    "LiveGameTracker": "Live Game Tracker",
+    "Callups": "Call-ups",
+    "TrainingUnits": "Training Units",
+    "SharedExercises": "Shared Exercises",
+    "GameReports": "Game Reports"
+  },
+  "layout": {
+    "collapse": "Collapse",
+    "logout": "Logout"
+  },
+  "login": {
+    "subtitle": "Select your role to continue",
+    "selectRole": "Select Role",
+    "loginButton": "Login",
+    "simulationNotice": "This is a simulation. No real login is performed."
+  },
+  "clubInfo": {
+    "editTitle": "Edit Club Information",
+    "clubName": "Club Name",
+    "foundationDate": "Foundation Date",
+    "memberCount": "Number of Members",
+    "clubHistory": "Club History",
+    "savedSuccess": "Saved successfully!"
+  },
+  "viewTeam": {
+    "rosterTitle": "Team Roster",
+    "goals": "Goals",
+    "assists": "Assists",
+    "trainingPlansTitle": "Training Plans",
+    "date": "Date",
+    "gameReportsTitle": "Game Reports",
+    "score": "Score",
+    "noTrainingPlans": "No training plans available.",
+    "noGameReports": "No game reports available."
+  },
+  "roster": {
+    "manageTitle": "Manage Roster",
+    "addAthlete": "Add Athlete",
+    "deleteConfirm": "Are you sure you want to delete this athlete?",
+    "editAthlete": "Edit Athlete",
+    "addNewAthlete": "Add New Athlete",
+    "name": "Name",
+    "number": "Number",
+    "position": "Position"
+  },
+  "trainingPlanner": {
+    "deleteUnitConfirm": "Are you sure you want to delete this training unit?",
+    "deleteExerciseConfirm": "Are you sure you want to delete this exercise? It will be removed from all training units.",
+    "editUnit": "Edit Training Unit",
+    "createUnit": "Create Training Unit",
+    "unitTitle": "Unit Title",
+    "observationsPlaceholder": "Observations (e.g., time per exercise)",
+    "selectExercises": "Select Exercises:",
+    "saveUnit": "Save Unit",
+    "editExercise": "Edit Exercise",
+    "createExercise": "Create Exercise",
+    "exerciseTitle": "Exercise Title",
+    "athleteCountPlaceholder": "Athlete Count (e.g., 2v1, 5+GK)",
+    "player": "Player",
+    "ball": "Ball",
+    "cone": "Cone",
+    "note": "Note",
+    "saveExercise": "Save Exercise",
+    "trainingUnits": "Training Units",
+    "exerciseLibrary": "Exercise Library",
+    "createUnitButton": "Create Unit",
+    "createExerciseButton": "Create Exercise",
+    "athletes": "Athletes"
+  },
+  "exerciseCategories": {
+    "Attack": "Attack",
+    "Defense": "Defense",
+    "SetPiece": "Set Piece"
+  },
+  "callup": {
+    "title": "Game Day Call-ups",
+    "newCallup": "New Call-up",
+    "createNew": "Create New Call-up",
+    "opponent": "Opponent",
+    "meetTime": "Meet Time",
+    "location": "Location",
+    "selectPlayers": "Select Players",
+    "shareCallup": "Share Call-up",
+    "calledUp": "Called up"
+  },
+  "gameTracker": {
+    "opponent": "Opponent",
+    "onCourt": "On Court",
+    "bench": "Bench",
+    "actionsFor": "Actions for",
+    "gameLog": "Game Log",
+    "firstHalf": "1st Half",
+    "secondHalf": "2nd Half",
+    "endGame": "End Game",
+    "startGame": "Start Game",
+    "newGameTitle": "Start New Game",
+    "enterOpponent": "Opponent's Name",
+    "finalReportTitle": "Final Game Report",
+    "reportObservations": "Final Observations..."
+  },
+  "gameEvents": {
+    "Goal": "Goal",
+    "Assist": "Assist",
+    "ShotOnTarget": "Shot on Target",
+    "ShotOffTarget": "Shot Off Target",
+    "Interception": "Interception",
+    "Tackle": "Tackle",
+    "Foul": "Foul",
+    "YellowCard": "Yellow Card",
+    "RedCard": "Red Card"
+  },
+  "athlete": {
+    "founded": "Founded",
+    "members": "Members",
+    "gameVs": "Game vs",
+    "date": "Date",
+    "meetAt": "Meet at",
+    "location": "Location",
+    "reportVs": "Report: vs"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Futsal Team Manager",
+  "description": "A comprehensive application to manage a futsal team. It allows different roles like Director, Technical Team, and Athlete to interact with specific modules for club management, training planning, live game tracking, and viewing shared information.",
+  "requestFramePermissions": []
+}
