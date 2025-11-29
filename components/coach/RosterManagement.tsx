@@ -3,7 +3,7 @@ import { useData } from '../../context/DataContext';
 import { useI18n } from '../../context/I18nContext';
 import { Athlete } from '../../types';
 import { useAuth } from '../../context/AuthContext';
-import { PlusCircle, Trash2, Edit, Link } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, Link, UserCircle2 } from 'lucide-react';
 
 // FIX: Omit 'height' and 'weight' from Athlete type before redefining them as strings to avoid type conflict (number & string = never).
 type AthleteFormData = Omit<Athlete, 'id' | 'teamId' | 'stats' | 'number' | 'height' | 'weight'> & { number: string, height?: string, weight?: string };
@@ -44,6 +44,18 @@ const RosterManagement: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setFormData(prev => ({ ...prev, photoUrl: event.target.result as string }));
+        }
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -144,14 +156,29 @@ const RosterManagement: React.FC = () => {
                   <input type="number" name="number" value={formData.number} onChange={handleChange} placeholder={t('athlete.number')} className="w-full bg-gray-700 p-2 rounded" required />
                   <input type="text" name="position" value={formData.position} onChange={handleChange} placeholder={t('athlete.position')} className="w-full bg-gray-700 p-2 rounded" required />
                   <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full bg-gray-700 p-2 rounded" />
-                  <input type="text" name="photoUrl" value={formData.photoUrl} onChange={handleChange} placeholder={t('athlete.photoUrl')} className="w-full bg-gray-700 p-2 rounded" />
-                  <select name="strongFoot" value={formData.strongFoot} onChange={handleChange} className="w-full bg-gray-700 p-2 rounded">
+                  <input type="number" name="height" value={formData.height} onChange={handleChange} placeholder={t('athlete.height')} className="w-full bg-gray-700 p-2 rounded" />
+                  <input type="number" name="weight" value={formData.weight} onChange={handleChange} placeholder={t('athlete.weight')} className="w-full bg-gray-700 p-2 rounded" />
+                   <select name="strongFoot" value={formData.strongFoot} onChange={handleChange} className="w-full bg-gray-700 p-2 rounded">
                     <option value="Right">{t('athlete.rightFoot')}</option>
                     <option value="Left">{t('athlete.leftFoot')}</option>
                     <option value="Both">{t('athlete.bothFeet')}</option>
                   </select>
-                  <input type="number" name="height" value={formData.height} onChange={handleChange} placeholder={t('athlete.height')} className="w-full bg-gray-700 p-2 rounded" />
-                  <input type="number" name="weight" value={formData.weight} onChange={handleChange} placeholder={t('athlete.weight')} className="w-full bg-gray-700 p-2 rounded" />
+              </div>
+               <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">{t('athlete.photo')}</label>
+                  <div className="flex items-center space-x-4">
+                      {formData.photoUrl ? (
+                          <img src={formData.photoUrl} alt="Athlete preview" className="h-20 w-20 rounded-full object-cover" />
+                      ) : (
+                          <div className="h-20 w-20 rounded-full bg-gray-700 flex items-center justify-center text-gray-400">
+                              <UserCircle2 className="h-10 w-10" />
+                          </div>
+                      )}
+                      <input type="file" id="photo-upload" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+                      <label htmlFor="photo-upload" className="cursor-pointer py-2 px-4 rounded-md text-sm font-medium text-white bg-gray-600 hover:bg-gray-500">
+                          {t('athlete.uploadPhoto')}
+                      </label>
+                  </div>
               </div>
               <textarea name="observations" value={formData.observations} onChange={handleChange} placeholder={t('common.observations')} className="w-full bg-gray-700 p-2 rounded" rows={3}/>
               <div className="flex justify-end space-x-2 pt-4">

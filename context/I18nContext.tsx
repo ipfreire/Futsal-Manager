@@ -29,8 +29,8 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(true);
       try {
         const [enResponse, ptResponse] = await Promise.all([
-          fetch('./locales/en.json'),
-          fetch('./locales/pt.json')
+          fetch('/locales/en.json'),
+          fetch('/locales/pt.json')
         ]);
         const en = await enResponse.json();
         const pt = await ptResponse.json();
